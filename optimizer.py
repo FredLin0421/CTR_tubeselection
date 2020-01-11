@@ -34,17 +34,17 @@ prob = om.Problem()
 indeps = prob.model.add_subsystem('indeps', om.IndepVarComp())
 
 
-indeps.add_output('length1', np.ones(N)*-40)
-indeps.add_output('length2', np.ones(N)*-50)
-indeps.add_output('length4', np.ones(N)*-60)
-indeps.add_output('kappa2', .05)
-indeps.add_output('d1', 1.4)
-indeps.add_output('d2', 1.6)
-indeps.add_output('d3', 1.9)
-indeps.add_output('d4', 2.4)
-indeps.add_output('d5', 2.5)
-indeps.add_output('d6', 2.9)
-indeps.add_output('l22', np.ones(N)*-40)
+indeps.add_output('length1', np.ones(N)*(-30))
+indeps.add_output('length2', np.ones(N)*(-50))
+indeps.add_output('length4', np.ones(N)*(-50))
+indeps.add_output('kappa2', .02)
+indeps.add_output('d1', 1.7)
+indeps.add_output('d2', 1.8)
+indeps.add_output('d3', 2.2)
+indeps.add_output('d4', 2.6)
+indeps.add_output('d5', 2.7)
+indeps.add_output('d6', 3.3)
+indeps.add_output('l22', np.ones(N)*(-40))
 indeps.add_output('psi2', np.ones(N))
 
 
@@ -95,7 +95,7 @@ prob.driver.options['maxiter'] = 1500
 prob.model.add_design_var('indeps.length1', lower=-140, upper=0)
 prob.model.add_design_var('indeps.length2', lower=-140, upper=0)
 prob.model.add_design_var('indeps.length4', lower=-140, upper=0)
-prob.model.add_design_var('indeps.kappa2', lower=0, upper=.09)
+prob.model.add_design_var('indeps.kappa2', lower=0, upper=.07)
 """prob.model.add_design_var('indeps.kb1', lower=0, upper=60)
 prob.model.add_design_var('indeps.kb2', lower=60, upper=100)
 prob.model.add_design_var('indeps.kb3', lower=100, upper=200)"""
@@ -153,5 +153,5 @@ mdict = {'Length1':prob['indeps.length1'],'Length2':prob['indeps.length2'],'Leng
         'Length4':prob['indeps.length4'],'l22':prob['indeps.l22'],'kb1':prob['Stiffness.kb1'],'kb2':prob['Stiffness.kb2'],
         'kb3':prob['Stiffness.kb3'],'kappa2':prob['indeps.kappa2'],'d1':prob['indeps.d1'],'d2':prob['indeps.d2'],'d3':prob['indeps.d3'],
         'd4':prob['indeps.d4'],'d5':prob['indeps.d5'],'d6':prob['indeps.d6'],'psi2':prob['indeps.psi2']}
-
-scipy.io.savemat('D:/Desktop/Fred/CTR/CTR optimization/CTR/Inverse_kinematics/jointvalues/jointvalue_distance_001.mat',mdict)
+# scipy.io.savemat('D:/Desktop/Fred/CTR/CTR optimization/CTR/Inverse_kinematics/jointvalues/jointvalue_distance_001.mat',mdict)
+scipy.io.savemat('/Users/fredlin/Desktop/Morimoto Lab Research/Concentric robot suturing/CTR_tubeselection/CTR_tubeselection/jointvalues/jointvalue_distance_004.mat',mdict)
