@@ -80,7 +80,7 @@ class CTR(om.ExplicitComponent):
         z = [backbone_point[0][2],backbone_point[1][2],backbone_point[2][2],backbone_point[3][2],backbone_point[4][2],backbone_point[5][2]]
         
         # Objective function 1
-        outputs['f'] = vec_distant(x,y,z)
+        outputs['f'] = vec_distant(x,y,z)*0.5
         # Objective function 2
         """outputs['f'] = vec_surface(x,y,z) * 0.1"""
         # Objective function 3

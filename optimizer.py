@@ -21,7 +21,7 @@ data_pb = f.get('Pb')
 data_pa = np.array(data_pa)
 data_pb = np.array(data_pb)
 # Adjust the base position of the concentric tube robot
-data_pa[0] = data_pa[0] + 40
+data_pa[0] = data_pa[0] + 30
 data_pa[2] = data_pa[2] - 100
 
 # We'll use the component that was defined in the last tutorial
@@ -34,17 +34,17 @@ prob = om.Problem()
 indeps = prob.model.add_subsystem('indeps', om.IndepVarComp())
 
 
-indeps.add_output('length1', np.ones(N)*(-30))
-indeps.add_output('length2', np.ones(N)*(-50))
-indeps.add_output('length4', np.ones(N)*(-50))
-indeps.add_output('kappa2', .02)
-indeps.add_output('d1', 1.7)
-indeps.add_output('d2', 1.8)
-indeps.add_output('d3', 2.2)
+indeps.add_output('length1', np.ones(N)*(-65))
+indeps.add_output('length2', np.ones(N)*(-40))
+indeps.add_output('length4', np.ones(N)*(-55))
+indeps.add_output('kappa2', .04)
+indeps.add_output('d1', 1.5)
+indeps.add_output('d2', 1.7)
+indeps.add_output('d3', 2.1)
 indeps.add_output('d4', 2.6)
-indeps.add_output('d5', 2.7)
+indeps.add_output('d5', 2.8)
 indeps.add_output('d6', 3.3)
-indeps.add_output('l22', np.ones(N)*(-40))
+indeps.add_output('l22', np.ones(N)*(-45))
 indeps.add_output('psi2', np.ones(N))
 
 
@@ -95,7 +95,7 @@ prob.driver.options['maxiter'] = 1500
 prob.model.add_design_var('indeps.length1', lower=-140, upper=0)
 prob.model.add_design_var('indeps.length2', lower=-140, upper=0)
 prob.model.add_design_var('indeps.length4', lower=-140, upper=0)
-prob.model.add_design_var('indeps.kappa2', lower=0, upper=.07)
+prob.model.add_design_var('indeps.kappa2', lower=0, upper=.08)
 """prob.model.add_design_var('indeps.kb1', lower=0, upper=60)
 prob.model.add_design_var('indeps.kb2', lower=60, upper=100)
 prob.model.add_design_var('indeps.kb3', lower=100, upper=200)"""
@@ -154,4 +154,4 @@ mdict = {'Length1':prob['indeps.length1'],'Length2':prob['indeps.length2'],'Leng
         'kb3':prob['Stiffness.kb3'],'kappa2':prob['indeps.kappa2'],'d1':prob['indeps.d1'],'d2':prob['indeps.d2'],'d3':prob['indeps.d3'],
         'd4':prob['indeps.d4'],'d5':prob['indeps.d5'],'d6':prob['indeps.d6'],'psi2':prob['indeps.psi2']}
 # scipy.io.savemat('D:/Desktop/Fred/CTR/CTR optimization/CTR/Inverse_kinematics/jointvalues/jointvalue_distance_001.mat',mdict)
-scipy.io.savemat('/Users/fredlin/Desktop/Morimoto Lab Research/Concentric robot suturing/CTR_tubeselection/CTR_tubeselection/jointvalues/jointvalue_distance_004.mat',mdict)
+scipy.io.savemat('/Users/fredlin/Desktop/Morimoto Lab Research/Concentric robot suturing/CTR_tubeselection/CTR_tubeselection/jointvalues/jointvalue_distance_004_b30.mat',mdict)
