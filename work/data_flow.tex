@@ -1,0 +1,66 @@
+
+\documentclass[border=10pt]{standalone}
+\usepackage{esdiff}
+
+
+\usepackage{tikz}
+\usetikzlibrary{fit, decorations.pathreplacing, decorations.markings, arrows, arrows.meta, positioning, shadows}
+\tikzset{>=latex}
+
+\definecolor{ucsd_blue}{RGB}{24,43,73}
+\definecolor{ucsd_yellow}{RGB}{255,205,0}
+\definecolor{ucsd_gold}{RGB}{198,146,20}
+\definecolor{my_grey}{gray}{0.6}
+
+        
+\begin{document}
+
+\begin{tikzpicture}[every text node part/.style={align=center}]
+\node[fit={(3.2000000000000006, 4.800000000000001) (9.6, 9.600000000000003)}, inner sep=0pt, draw=my_grey, fill=white, label={[text=black]center:{}}] () {};
+\node[fit={(9.600000000000001, 9.992007221626409e-16) (16.0, 4.8)}, inner sep=0pt, draw=my_grey, fill=white, label={[text=black]center:{}}] () {};
+\node[fit={(1.1102230246251565e-16, 9.6) (3.1999999999999997, 12.000000000000002)}, inner sep=0pt, draw=my_grey, fill=white, label={[text=black]center:{}}] () {};
+\node[fit={(3.2000000000000006, 7.200000000000002) (6.400000000000001, 9.600000000000003)}, inner sep=0pt, draw=my_grey, fill=white, label={[text=black]center:{}}] () {};
+\node[fit={(6.3999999999999995, 4.800000000000001) (9.6, 7.200000000000001)}, inner sep=0pt, draw=my_grey, fill=white, label={[text=black]center:{}}] () {};
+\node[fit={(9.600000000000001, 2.4) (12.8, 4.8)}, inner sep=0pt, draw=my_grey, fill=white, label={[text=black]center:{}}] () {};
+\node[fit={(12.8, 9.992007221626409e-16) (16.0, 2.400000000000001)}, inner sep=0pt, draw=my_grey, fill=white, label={[text=black]center:{}}] () {};
+\node[fit={(0.40000000000000013, 10.0) (2.8, 11.600000000000001)}, inner sep=0pt, draw=black, fill=yellow!20, rounded corners, label={[text=black]center:{Optimizer}}] (comp0) {};
+\node[fit={(3.6000000000000005, 7.600000000000002) (6.000000000000001, 9.200000000000003)}, inner sep=0pt, draw=black, fill=blue!20, rounded corners, label={[text=black]center:{Stiffness comp}}] (comp1) {};
+\node[fit={(6.8, 5.200000000000001) (9.2, 6.800000000000001)}, inner sep=0pt, draw=black, fill=blue!20, rounded corners, label={[text=black]center:{Kinematics}}] (comp2) {};
+\node[fit={(10.000000000000002, 2.8) (12.4, 4.3999999999999995)}, inner sep=0pt, draw=black, fill=blue!20, rounded corners, label={[text=black]center:{Stiffness comp}}] (comp3) {};
+\node[fit={(13.200000000000001, 0.400000000000001) (15.6, 2.000000000000001)}, inner sep=0pt, draw=black, fill=blue!20, rounded corners, label={[text=black]center:{Kinematics}}] (comp4) {};
+\draw [->, to reversed-to, line width=1mm, my_grey] (comp0) -| (comp1);
+\draw [->, to reversed-to, line width=1mm, my_grey] (comp0) -| (comp3);
+\draw [->, to reversed-to, line width=1mm, my_grey] (comp0) -| (comp2);
+\draw [->, to reversed-to, line width=1mm, my_grey] (comp0) -| (comp4);
+\draw [->, to reversed-to, line width=1mm, my_grey] (comp1) -| (comp2);
+\draw [->, to reversed-to, line width=1mm, my_grey] (comp3) -| (comp4);
+\draw [->, to reversed-to, line width=1mm, my_grey] (comp4) -| (comp0);
+\draw [->, to reversed-to, line width=1mm, my_grey] (comp2) -| (comp0);
+\draw[black, fill=white] (4.800000000000001, 10.8) circle (1.5mm);
+\node[fit={(3.3000000000000007, 10.200000000000001) (6.300000000000001, 11.4)}, inner sep=0pt, draw=my_grey, fill=black!20, thick, label={[text=black]center:{$D_{inner_{q,i}}, D_{outer_{q,i}}$}}] () {};
+\draw[black, fill=white] (11.200000000000001, 10.8) circle (1.5mm);
+\node[fit={(9.700000000000001, 10.200000000000001) (12.700000000000001, 11.4)}, inner sep=0pt, draw=my_grey, fill=black!20, thick, label={[text=black]center:{$D_{inner_{q,i}}, D_{outer_{q,i}}$}}] () {};
+\draw[black, fill=white] (8.0, 10.8) circle (1.5mm);
+\node[fit={(6.75, 10.200000000000001) (9.25, 11.4)}, inner sep=0pt, draw=my_grey, fill=black!20, thick, label={[text=black]center:{$l_{q,j}, \psi_{q,j}, \kappa_{q,i}$}}] () {};
+\draw[black, fill=white] (14.4, 10.8) circle (1.5mm);
+\node[fit={(13.15, 10.200000000000001) (15.65, 11.4)}, inner sep=0pt, draw=my_grey, fill=black!20, thick, label={[text=black]center:{$l_{q,j}, \psi_{q,j}, \kappa_{q,i}$}}] () {};
+\draw[black, fill=white] (8.0, 8.400000000000002) circle (1.5mm);
+\node[fit={(7.25, 7.8000000000000025) (8.75, 9.000000000000002)}, inner sep=0pt, draw=my_grey, fill=black!20, thick, label={[text=black]center:{$kb_{q,i}$}}] () {};
+\draw[black, fill=white] (14.4, 3.5999999999999996) circle (1.5mm);
+\node[fit={(13.65, 2.9999999999999996) (15.15, 4.199999999999999)}, inner sep=0pt, draw=my_grey, fill=black!20, thick, label={[text=black]center:{$kb_{q,i}$}}] () {};
+\draw[black, fill=white] (1.6, 1.200000000000001) circle (1.5mm);
+\node[fit={(0.8500000000000001, 0.6000000000000011) (2.35, 1.8000000000000012)}, inner sep=0pt, draw=my_grey, fill=black!20, thick, label={[text=black]center:{objective\\constriants}}] () {};
+\draw[black, fill=white] (1.6, 6.000000000000001) circle (1.5mm);
+\node[fit={(0.8500000000000001, 5.400000000000001) (2.35, 6.6000000000000005)}, inner sep=0pt, draw=my_grey, fill=black!20, thick, label={[text=black]center:{objective\\constriants}}] () {};
+\node[fit={(18.0, 4.800000000000001) (20.0, 9.600000000000003)}, inner sep=0pt, draw=white, fill=black!20, thick, label={[text=black]center:{}}] () {};
+\node[fit={(19.0, 4.800000000000001) (20.0, 9.600000000000003)}, inner sep=0pt, draw=none, fill=none, thick, label={[text=black]center:{\rotatebox{270}{Right arm}}}] () {};
+\node[fit={(18.0, 9.992007221626409e-16) (20.0, 4.8)}, inner sep=0pt, draw=white, fill=black!20, thick, label={[text=black]center:{}}] () {};
+\node[fit={(19.0, 9.992007221626409e-16) (20.0, 4.8)}, inner sep=0pt, draw=none, fill=none, thick, label={[text=black]center:{\rotatebox{270}{Left arm}}}] () {};
+\node[fit={(18.0, 9.6) (19.0, 12.000000000000002)}, inner sep=0pt, draw=white, fill=yellow!20, thick, label={[text=black]center:{\rotatebox{270}{Optimizer}}}] () {};
+\node[fit={(18.0, 7.200000000000002) (19.0, 9.600000000000003)}, inner sep=0pt, draw=white, fill=blue!20, thick, label={[text=black]center:{\rotatebox{270}{Stiffness comp}}}] () {};
+\node[fit={(18.0, 4.800000000000001) (19.0, 7.200000000000001)}, inner sep=0pt, draw=white, fill=blue!20, thick, label={[text=black]center:{\rotatebox{270}{Kinematics}}}] () {};
+\node[fit={(18.0, 2.4) (19.0, 4.8)}, inner sep=0pt, draw=white, fill=blue!20, thick, label={[text=black]center:{\rotatebox{270}{Stiffness comp}}}] () {};
+\node[fit={(18.0, 9.992007221626409e-16) (19.0, 2.400000000000001)}, inner sep=0pt, draw=white, fill=blue!20, thick, label={[text=black]center:{\rotatebox{270}{Kinematics}}}] () {};
+\end{tikzpicture}
+
+\end{document}

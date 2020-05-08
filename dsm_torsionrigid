@@ -1,0 +1,36 @@
+from pytikz.data_flow import DataFlow
+
+
+data_flow = DataFlow()
+
+data_flow.show_hierarchy_edges = True
+data_flow.show_hierarchy_tree = True
+data_flow.hierarchy_tree_side = 'right'
+data_flow.hierarchy_tree_angle = 270
+data_flow.hierarchy_tree_size_x = 1.
+data_flow.default_dep_size_x = 1.5
+data_flow.default_dep_size_y = 1.2
+
+data_flow.add_comp('comp0', r'Optimizer', color=r'yellow!20')
+data_flow.add_comp('comp1', r'Stiffness comp', color=r'blue!20')
+data_flow.add_comp('comp2', r'Kinematics', color=r'blue!20')
+data_flow.add_comp('comp3', r'Stiffness comp', color=r'blue!20')
+data_flow.add_comp('comp4', r'Kinematics', color=r'blue!20')
+
+
+data_flow.add_dep('comp0', 'comp1', r'$D_{inner_{q,i}}, D_{outer_{q,i}}$',dep_size_x=3)
+data_flow.add_dep('comp0', 'comp3', r'$D_{inner_{q,i}}, D_{outer_{q,i}}$',dep_size_x=3)
+data_flow.add_dep('comp0', 'comp2', r'$l_{q,j}, \psi_{q,j}, \kappa_{q,i}$',dep_size_x=2.5)
+data_flow.add_dep('comp0', 'comp4', r'$l_{q,j}, \psi_{q,j}, \kappa_{q,i}$',dep_size_x=2.5)
+
+data_flow.add_dep('comp1', 'comp2', r'$kb_{q,i}$')
+data_flow.add_dep('comp3', 'comp4', r'$kb_{q,i}$')
+data_flow.add_dep('comp4', 'comp0', r'objective\\constriants')
+data_flow.add_dep('comp2', 'comp0', r'objective\\constriants')
+
+
+
+data_flow.add_group('group1', 'Right arm', ('comp1', 'comp2'))
+data_flow.add_group('group2', 'Left arm', ('comp3', 'comp4'))
+
+data_flow.write('data_flow')

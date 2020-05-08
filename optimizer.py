@@ -10,6 +10,7 @@ from model import CTR
 import h5py
 import time
 import scipy.io
+from math import cos,sin,radians
 from stiffness import Stiffness
 
 
@@ -18,11 +19,22 @@ t0=time.time()
 f = h5py.File('path.mat','r')
 data_pa = f.get('Pa')
 data_pb = f.get('Pb')
-data_pa = np.array(data_pa)
-data_pb = np.array(data_pb)
+data_pa = np.array(data_pa[:,49:])
+data_pb = np.array(data_pb[:,49:])
+# Rotate the path by 180 degrees
+Rot = [[-1,0,0],[0,-1,0],[0,0,1]]
+Rot = np.array(Rot)
+data_pa = np.dot(Rot,data_pa)
+# Entry Angle
+theta = 45 
+Rot2 = np.array([[1,0,0],[0,cos(radians(theta)),-sin(radians(theta))],[0,sin(radians(theta)),cos(radians(theta))]])
+data_pa = np.dot(Rot2,data_pa)
+data_pb = np.dot(Rot2,data_pb)
 # Adjust the base position of the concentric tube robot
-data_pa[0] = data_pa[0] + 30
-data_pa[2] = data_pa[2] - 100
+"""data_pa[0] = data_pa[0] + 50
+data_pa[1] = data_pa[1] - 20
+data_pa[2] = data_pa[2] - 120"""
+
 
 # We'll use the component that was defined in the last tutorial
 
@@ -34,26 +46,39 @@ prob = om.Problem()
 indeps = prob.model.add_subsystem('indeps', om.IndepVarComp())
 
 
-indeps.add_output('length1', np.ones(N)*(-65))
-indeps.add_output('length2', np.ones(N)*(-40))
-indeps.add_output('length4', np.ones(N)*(-55))
-indeps.add_output('kappa2', .04)
-indeps.add_output('d1', 1.5)
-indeps.add_output('d2', 1.7)
-indeps.add_output('d3', 2.1)
-indeps.add_output('d4', 2.6)
-indeps.add_output('d5', 2.8)
-indeps.add_output('d6', 3.3)
-indeps.add_output('l22', np.ones(N)*(-45))
+indeps.add_output('length1', np.ones(N)*(-30))
+indeps.add_output('length2', np.ones(N)*(-30))
+indeps.add_output('length4', np.ones(N)*(-30))
+indeps.add_output('kappa2', .05)
+indeps.add_output('d1', 1.370)
+indeps.add_output('d2', 1.850)
+indeps.add_output('d3', 2.007)
+indeps.add_output('d4', 2.400)
+indeps.add_output('d5', 2.590)
+indeps.add_output('d6', 3.048)
+indeps.add_output('l22', np.ones(N)*(-60))
 indeps.add_output('psi2', np.ones(N))
+
+"""indeps.add_output('length1', np.ones(N)*(-30))
+indeps.add_output('length2', np.ones(N)*(-30))
+indeps.add_output('length4', np.ones(N)*(-30))
+indeps.add_output('kappa2', .04)
+indeps.add_output('d1', 1.2)
+indeps.add_output('d2', 1.5)
+indeps.add_output('d3', 2.1)
+indeps.add_output('d4', 2.5)
+indeps.add_output('d5', 2.9)
+indeps.add_output('d6', 3.1)
+indeps.add_output('l22', np.ones(N)*(-60))
+indeps.add_output('psi2', np.ones(N))"""
 
 
 prob.model.add_subsystem('ctr', CTR())
 prob.model.add_subsystem('Stiffness',Stiffness())
 # define the component whose output will be constrained
-prob.model.add_subsystem('const1', om.ExecComp('x = length1*(cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*cos(psi2)*sin((kappa2*kb2*(length2))/(kb1 + kb2)) + sin((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*cos((kappa2*kb2*(length2))/(kb1 + kb2))*cos(psi2)) - (cos(psi2)*(cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3)) - 1)*(kb1 + kb2 + kb3))/(kappa2*kb2) - (cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*cos(psi2)*(cos((kappa2*kb2*(length2))/(kb1 + kb2)) - 1)*(kb1 + kb2))/(kappa2*kb2) + (sin((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*cos(psi2)*sin((kappa2*kb2*(length2))/(kb1 + kb2))*(kb1 + kb2))/(kappa2*kb2)',x=np.zeros(N),l22=np.zeros(N),length2=np.zeros(N),length1=np.zeros(N),psi2=np.zeros(N)))
-prob.model.add_subsystem('const2', om.ExecComp('y = length1*(cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*sin((kappa2*kb2*(length2))/(kb1 + kb2))*sin(psi2) + sin((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*cos((kappa2*kb2*(length2))/(kb1 + kb2))*sin(psi2)) - (sin(psi2)*(cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3)) - 1)*(kb1 + kb2 + kb3))/(kappa2*kb2) - (cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*sin(psi2)*(cos((kappa2*kb2*(length2))/(kb1 + kb2)) - 1)*(kb1 + kb2))/(kappa2*kb2) + (sin((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*sin((kappa2*kb2*(length2))/(kb1 + kb2))*sin(psi2)*(kb1 + kb2))/(kappa2*kb2)',y=np.zeros(N),l22=np.zeros(N),length2=np.zeros(N),length1=np.zeros(N),psi2=np.zeros(N)))
-prob.model.add_subsystem('const3', om.ExecComp('z = length4 + length1*(cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*cos((kappa2*kb2*(length2))/(kb1 + kb2)) - sin((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*sin((kappa2*kb2*(length2))/(kb1 + kb2))) + (sin((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*(kb1 + kb2 + kb3))/(kappa2*kb2) + (cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*sin((kappa2*kb2*(length2))/(kb1 + kb2))*(kb1 + kb2))/(kappa2*kb2) + (sin((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*(cos((kappa2*kb2*(length2))/(kb1 + kb2)) - 1)*(kb1 + kb2))/(kappa2*kb2)',z=np.zeros(N),l22=np.zeros(N),length4=np.zeros(N),length1=np.zeros(N),length2=np.zeros(N)))
+prob.model.add_subsystem('const1', om.ExecComp('x = length1*(cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*cos(psi2)*sin((kappa2*kb2*(length2))/(kb1 + kb2)) + sin((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*cos((kappa2*kb2*(length2))/(kb1 + kb2))*cos(psi2)) - (cos(psi2)*(cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3)) - 1)*(kb1 + kb2 + kb3))/(kappa2*kb2) - (cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*cos(psi2)*(cos((kappa2*kb2*(length2))/(kb1 + kb2)) - 1)*(kb1 + kb2))/(kappa2*kb2) + (sin((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*cos(psi2)*sin((kappa2*kb2*(length2))/(kb1 + kb2))*(kb1 + kb2))/(kappa2*kb2)-3',x=np.zeros(N),l22=np.zeros(N),length2=np.zeros(N),length1=np.zeros(N),psi2=np.zeros(N)))
+prob.model.add_subsystem('const2', om.ExecComp('y = length1*(cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*sin((kappa2*kb2*(length2))/(kb1 + kb2))*sin(psi2) + sin((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*cos((kappa2*kb2*(length2))/(kb1 + kb2))*sin(psi2)) - (sin(psi2)*(cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3)) - 1)*(kb1 + kb2 + kb3))/(kappa2*kb2) - (cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*sin(psi2)*(cos((kappa2*kb2*(length2))/(kb1 + kb2)) - 1)*(kb1 + kb2))/(kappa2*kb2) + (sin((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*sin((kappa2*kb2*(length2))/(kb1 + kb2))*sin(psi2)*(kb1 + kb2))/(kappa2*kb2)-20',y=np.zeros(N),l22=np.zeros(N),length2=np.zeros(N),length1=np.zeros(N),psi2=np.zeros(N)))
+prob.model.add_subsystem('const3', om.ExecComp('z = length4 + length1*(cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*cos((kappa2*kb2*(length2))/(kb1 + kb2)) - sin((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*sin((kappa2*kb2*(length2))/(kb1 + kb2))) + (sin((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*(kb1 + kb2 + kb3))/(kappa2*kb2) + (cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*sin((kappa2*kb2*(length2))/(kb1 + kb2))*(kb1 + kb2))/(kappa2*kb2) + (sin((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*(cos((kappa2*kb2*(length2))/(kb1 + kb2)) - 1)*(kb1 + kb2))/(kappa2*kb2)+120',z=np.zeros(N),l22=np.zeros(N),length4=np.zeros(N),length1=np.zeros(N),length2=np.zeros(N)))
 prob.model.add_subsystem('const4', om.ExecComp('g=l22-length2', g=np.zeros(N),l22=np.zeros(N),length2=np.zeros(N)))
 prob.model.add_subsystem('const5', om.ExecComp('k1=kb1'))
 prob.model.add_subsystem('const6', om.ExecComp('k2=kb2'))
@@ -92,21 +117,21 @@ prob.driver.options['maxiter'] = 1500
 
 
 # Add design variables
-prob.model.add_design_var('indeps.length1', lower=-140, upper=0)
-prob.model.add_design_var('indeps.length2', lower=-140, upper=0)
-prob.model.add_design_var('indeps.length4', lower=-140, upper=0)
-prob.model.add_design_var('indeps.kappa2', lower=0, upper=.08)
+prob.model.add_design_var('indeps.length1', lower=-500, upper=0)
+prob.model.add_design_var('indeps.length2', lower=-500, upper=0)
+prob.model.add_design_var('indeps.length4', lower=-500, upper=0)
+prob.model.add_design_var('indeps.kappa2', lower=0.04, upper=.1)
 """prob.model.add_design_var('indeps.kb1', lower=0, upper=60)
 prob.model.add_design_var('indeps.kb2', lower=60, upper=100)
 prob.model.add_design_var('indeps.kb3', lower=100, upper=200)"""
-prob.model.add_design_var('indeps.l22', lower=-140, upper=0)
-prob.model.add_design_var('indeps.psi2', lower=-2, upper=2)
-prob.model.add_design_var('indeps.d1', lower=1, upper=3.5)
+prob.model.add_design_var('indeps.l22', lower=-500, upper=-15)
+prob.model.add_design_var('indeps.psi2', lower=-3.14, upper=3.14)
+"""prob.model.add_design_var('indeps.d1', lower=1, upper=3.5)
 prob.model.add_design_var('indeps.d2', lower=1,upper=3.5)
 prob.model.add_design_var('indeps.d3', lower=1,upper=3.5)
 prob.model.add_design_var('indeps.d4', lower=1,upper=3.5)
 prob.model.add_design_var('indeps.d5', lower=1,upper=3.5)
-prob.model.add_design_var('indeps.d6', lower=1,upper=3.5)
+prob.model.add_design_var('indeps.d6', lower=1,upper=3.5)"""
 prob.model.add_objective('ctr.f')
 
 # Add constraints
@@ -114,16 +139,16 @@ prob.model.add_constraint('const1.x', equals=data_pa[0])
 prob.model.add_constraint('const2.y', equals=data_pa[1])
 prob.model.add_constraint('const3.z', equals=data_pa[2])
 prob.model.add_constraint('const4.g', upper=0)
-prob.model.add_constraint('const5.k1', lower=0,upper=50)
-prob.model.add_constraint('const6.k2', lower=50,upper=90)
-prob.model.add_constraint('const12.k3', lower=100,upper=200)
+"""prob.model.add_constraint('const5.k1', lower=0,upper=60)
+prob.model.add_constraint('const6.k2', lower=60,upper=100)
+prob.model.add_constraint('const12.k3', lower=100,upper=250)"""
 """prob.model.add_constraint('const5.k1', lower=0)
 prob.model.add_constraint('const6.k2', lower=0)"""
-prob.model.add_constraint('const7.t1', lower=0.1,upper=1)
+"""prob.model.add_constraint('const7.t1', lower=0.1,upper=1)
 prob.model.add_constraint('const8.t2', lower=0.1,upper=1)
 prob.model.add_constraint('const9.t3', lower=0.1,upper=1)
 prob.model.add_constraint('const10.t12', lower=0.12, upper=0.15)
-prob.model.add_constraint('const11.t23', lower=0.12, upper=0.15)
+prob.model.add_constraint('const11.t23', lower=0.12, upper=0.15)"""
 #prob.model.add_constraint('const7.l23', lower=0)
 prob.setup()
 prob.run_driver()
@@ -154,4 +179,4 @@ mdict = {'Length1':prob['indeps.length1'],'Length2':prob['indeps.length2'],'Leng
         'kb3':prob['Stiffness.kb3'],'kappa2':prob['indeps.kappa2'],'d1':prob['indeps.d1'],'d2':prob['indeps.d2'],'d3':prob['indeps.d3'],
         'd4':prob['indeps.d4'],'d5':prob['indeps.d5'],'d6':prob['indeps.d6'],'psi2':prob['indeps.psi2']}
 # scipy.io.savemat('D:/Desktop/Fred/CTR/CTR optimization/CTR/Inverse_kinematics/jointvalues/jointvalue_distance_001.mat',mdict)
-scipy.io.savemat('/Users/fredlin/Desktop/Morimoto Lab Research/Concentric robot suturing/CTR_tubeselection/CTR_tubeselection/jointvalues/jointvalue_distance_004_b30.mat',mdict)
+scipy.io.savemat('D:/Desktop/Fred/CTR_tubeselection/CTR_tubeselection/jointvalues/jonitvalue_ob3_test001.mat',mdict)

@@ -15,16 +15,16 @@ from stiffness import Stiffness
 class CTR(om.ExplicitComponent):
     
     def setup(self):
-        
-        self.add_input('length1', val=np.zeros(95))
-        self.add_input('length2', val=np.zeros(95))
-        self.add_input('length4', val=np.zeros(95))
+        N = 46
+        self.add_input('length1', val=np.zeros(N))
+        self.add_input('length2', val=np.zeros(N))
+        self.add_input('length4', val=np.zeros(N))
         self.add_input('kappa2', val=0.0)
         self.add_input('kb1')
         self.add_input('kb2')
         self.add_input('kb3')
-        self.add_input('l22', val=np.zeros(95))
-        self.add_input('psi2',val=np.zeros(95))
+        self.add_input('l22', val=np.zeros(N))
+        self.add_input('psi2',val=np.zeros(N))
         self.add_output('f', val=0.0)
         
 
@@ -52,9 +52,27 @@ class CTR(om.ExplicitComponent):
                               [ (np.sin((kappa2*kb2*(l22 - length2/2))/(kb1 + kb2 + kb3))*np.cos(psi2)*np.sin((kappa2*kb2*(length2/2))/(kb1 + kb2))*(kb1 + kb2))/(kappa2*kb2) - (np.cos((kappa2*kb2*(l22 - length2/2))/(kb1 + kb2 + kb3))*np.cos(psi2)*(np.cos((kappa2*kb2*(length2/2))/(kb1 + kb2)) - 1)*(kb1 + kb2))/(kappa2*kb2) - (np.cos(psi2)*(np.cos((kappa2*kb2*(l22 - length2/2))/(kb1 + kb2 + kb3)) - 1)*(kb1 + kb2 + kb3))/(kappa2*kb2), (np.sin((kappa2*kb2*(l22 - length2/2))/(kb1 + kb2 + kb3))*np.sin((kappa2*kb2*(length2/2))/(kb1 + kb2))*np.sin(psi2)*(kb1 + kb2))/(kappa2*kb2) - (np.cos((kappa2*kb2*(l22 - length2/2))/(kb1 + kb2 + kb3))*np.sin(psi2)*(np.cos((kappa2*kb2*(length2/2))/(kb1 + kb2)) - 1)*(kb1 + kb2))/(kappa2*kb2) - (np.sin(psi2)*(np.cos((kappa2*kb2*(l22 - length2/2))/(kb1 + kb2 + kb3)) - 1)*(kb1 + kb2 + kb3))/(kappa2*kb2), length4 + (np.sin((kappa2*kb2*(l22 - length2/2))/(kb1 + kb2 + kb3))*(kb1 + kb2 + kb3))/(kappa2*kb2) + (np.cos((kappa2*kb2*(l22 - length2/2))/(kb1 + kb2 + kb3))*np.sin((kappa2*kb2*(length2/2))/(kb1 + kb2))*(kb1 + kb2))/(kappa2*kb2) + (np.sin((kappa2*kb2*(l22 - length2/2))/(kb1 + kb2 + kb3))*(np.cos((kappa2*kb2*(length2/2))/(kb1 + kb2)) - 1)*(kb1 + kb2))/(kappa2*kb2)],
                               [ (np.sin((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*np.cos(psi2)*np.sin((kappa2*kb2*(length2))/(kb1 + kb2))*(kb1 + kb2))/(kappa2*kb2) - (np.cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*np.cos(psi2)*(np.cos((kappa2*kb2*(length2))/(kb1 + kb2)) - 1)*(kb1 + kb2))/(kappa2*kb2) - (np.cos(psi2)*(np.cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3)) - 1)*(kb1 + kb2 + kb3))/(kappa2*kb2), (np.sin((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*np.sin((kappa2*kb2*(length2))/(kb1 + kb2))*np.sin(psi2)*(kb1 + kb2))/(kappa2*kb2) - (np.cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*np.sin(psi2)*(np.cos((kappa2*kb2*(length2))/(kb1 + kb2)) - 1)*(kb1 + kb2))/(kappa2*kb2) - (np.sin(psi2)*(np.cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3)) - 1)*(kb1 + kb2 + kb3))/(kappa2*kb2), length4 + (np.sin((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*(kb1 + kb2 + kb3))/(kappa2*kb2) + (np.cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*np.sin((kappa2*kb2*(length2))/(kb1 + kb2))*(kb1 + kb2))/(kappa2*kb2) + (np.sin((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*(np.cos((kappa2*kb2*(length2))/(kb1 + kb2)) - 1)*(kb1 + kb2))/(kappa2*kb2)],
                               [np.zeros(len(length4)),np.zeros(len(length4)),length1/2]]
+            
+            """backbone_point = [
+                              
+                              [np.zeros(len(length4)),np.zeros(len(length4)),length4*0.25],
+                              [np.zeros(len(length4)),np.zeros(len(length4)),length4*0.5],
+                              [np.zeros(len(length4)),np.zeros(len(length4)),length4*0.75],
+                              [np.zeros(len(length4)),np.zeros(len(length4)),length4],
+                              [ -(np.cos(psi2)*(np.cos((kappa2*kb2*(l22 - length2)/4)/(kb1 + kb2 + kb3)) - 1)*(kb1 + kb2 + kb3))/(kappa2*kb2), -(np.sin(psi2)*(np.cos((kappa2*kb2*(l22 - length2)/4)/(kb1 + kb2 + kb3)) - 1)*(kb1 + kb2 + kb3))/(kappa2*kb2), length4 + (np.sin((kappa2*kb2*(l22 - length2)/4)/(kb1 + kb2 + kb3))*(kb1 + kb2 + kb3))/(kappa2*kb2)],
+                              [ -(np.cos(psi2)*(np.cos((kappa2*kb2*(l22 - length2)/2)/(kb1 + kb2 + kb3)) - 1)*(kb1 + kb2 + kb3))/(kappa2*kb2), -(np.sin(psi2)*(np.cos((kappa2*kb2*(l22 - length2)/2)/(kb1 + kb2 + kb3)) - 1)*(kb1 + kb2 + kb3))/(kappa2*kb2), length4 + (np.sin((kappa2*kb2*(l22 - length2)/2)/(kb1 + kb2 + kb3))*(kb1 + kb2 + kb3))/(kappa2*kb2)],
+                              [ -(np.cos(psi2)*(np.cos((kappa2*kb2*(l22 - length2)*0.75)/(kb1 + kb2 + kb3)) - 1)*(kb1 + kb2 + kb3))/(kappa2*kb2), -(np.sin(psi2)*(np.cos((kappa2*kb2*(l22 - length2)*0.75)/(kb1 + kb2 + kb3)) - 1)*(kb1 + kb2 + kb3))/(kappa2*kb2), length4 + (np.sin((kappa2*kb2*(l22 - length2)*0.75)/(kb1 + kb2 + kb3))*(kb1 + kb2 + kb3))/(kappa2*kb2)],
+                              [ -(np.cos(psi2)*(np.cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3)) - 1)*(kb1 + kb2 + kb3))/(kappa2*kb2), -(np.sin(psi2)*(np.cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3)) - 1)*(kb1 + kb2 + kb3))/(kappa2*kb2), length4 + (np.sin((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*(kb1 + kb2 + kb3))/(kappa2*kb2)],
+                              [ (np.sin((kappa2*kb2*(l22 - length2/4))/(kb1 + kb2 + kb3))*np.cos(psi2)*np.sin((kappa2*kb2*(length2/4))/(kb1 + kb2))*(kb1 + kb2))/(kappa2*kb2) - (np.cos((kappa2*kb2*(l22 - length2/4))/(kb1 + kb2 + kb3))*np.cos(psi2)*(np.cos((kappa2*kb2*(length2/4))/(kb1 + kb2)) - 1)*(kb1 + kb2))/(kappa2*kb2) - (np.cos(psi2)*(np.cos((kappa2*kb2*(l22 - length2/4))/(kb1 + kb2 + kb3)) - 1)*(kb1 + kb2 + kb3))/(kappa2*kb2), (np.sin((kappa2*kb2*(l22 - length2/4))/(kb1 + kb2 + kb3))*np.sin((kappa2*kb2*(length2/4))/(kb1 + kb2))*np.sin(psi2)*(kb1 + kb2))/(kappa2*kb2) - (np.cos((kappa2*kb2*(l22 - length2/4))/(kb1 + kb2 + kb3))*np.sin(psi2)*(np.cos((kappa2*kb2*(length2/4))/(kb1 + kb2)) - 1)*(kb1 + kb2))/(kappa2*kb2) - (np.sin(psi2)*(np.cos((kappa2*kb2*(l22 - length2/4))/(kb1 + kb2 + kb3)) - 1)*(kb1 + kb2 + kb3))/(kappa2*kb2), length4 + (np.sin((kappa2*kb2*(l22 - length2/4))/(kb1 + kb2 + kb3))*(kb1 + kb2 + kb3))/(kappa2*kb2) + (np.cos((kappa2*kb2*(l22 - length2/4))/(kb1 + kb2 + kb3))*np.sin((kappa2*kb2*(length2/4))/(kb1 + kb2))*(kb1 + kb2))/(kappa2*kb2) + (np.sin((kappa2*kb2*(l22 - length2/4))/(kb1 + kb2 + kb3))*(np.cos((kappa2*kb2*(length2/4))/(kb1 + kb2)) - 1)*(kb1 + kb2))/(kappa2*kb2)],
+                              [ (np.sin((kappa2*kb2*(l22 - length2/2))/(kb1 + kb2 + kb3))*np.cos(psi2)*np.sin((kappa2*kb2*(length2/2))/(kb1 + kb2))*(kb1 + kb2))/(kappa2*kb2) - (np.cos((kappa2*kb2*(l22 - length2/2))/(kb1 + kb2 + kb3))*np.cos(psi2)*(np.cos((kappa2*kb2*(length2/2))/(kb1 + kb2)) - 1)*(kb1 + kb2))/(kappa2*kb2) - (np.cos(psi2)*(np.cos((kappa2*kb2*(l22 - length2/2))/(kb1 + kb2 + kb3)) - 1)*(kb1 + kb2 + kb3))/(kappa2*kb2), (np.sin((kappa2*kb2*(l22 - length2/2))/(kb1 + kb2 + kb3))*np.sin((kappa2*kb2*(length2/2))/(kb1 + kb2))*np.sin(psi2)*(kb1 + kb2))/(kappa2*kb2) - (np.cos((kappa2*kb2*(l22 - length2/2))/(kb1 + kb2 + kb3))*np.sin(psi2)*(np.cos((kappa2*kb2*(length2/2))/(kb1 + kb2)) - 1)*(kb1 + kb2))/(kappa2*kb2) - (np.sin(psi2)*(np.cos((kappa2*kb2*(l22 - length2/2))/(kb1 + kb2 + kb3)) - 1)*(kb1 + kb2 + kb3))/(kappa2*kb2), length4 + (np.sin((kappa2*kb2*(l22 - length2/2))/(kb1 + kb2 + kb3))*(kb1 + kb2 + kb3))/(kappa2*kb2) + (np.cos((kappa2*kb2*(l22 - length2/2))/(kb1 + kb2 + kb3))*np.sin((kappa2*kb2*(length2/2))/(kb1 + kb2))*(kb1 + kb2))/(kappa2*kb2) + (np.sin((kappa2*kb2*(l22 - length2/2))/(kb1 + kb2 + kb3))*(np.cos((kappa2*kb2*(length2/2))/(kb1 + kb2)) - 1)*(kb1 + kb2))/(kappa2*kb2)],
+                              [ (np.sin((kappa2*kb2*(l22 - length2*0.75))/(kb1 + kb2 + kb3))*np.cos(psi2)*np.sin((kappa2*kb2*(length2*0.75))/(kb1 + kb2))*(kb1 + kb2))/(kappa2*kb2) - (np.cos((kappa2*kb2*(l22 - length2*0.75))/(kb1 + kb2 + kb3))*np.cos(psi2)*(np.cos((kappa2*kb2*(length2*0.75))/(kb1 + kb2)) - 1)*(kb1 + kb2))/(kappa2*kb2) - (np.cos(psi2)*(np.cos((kappa2*kb2*(l22 - length2*0.75))/(kb1 + kb2 + kb3)) - 1)*(kb1 + kb2 + kb3))/(kappa2*kb2), (np.sin((kappa2*kb2*(l22 - length2*0.75))/(kb1 + kb2 + kb3))*np.sin((kappa2*kb2*(length2*0.75))/(kb1 + kb2))*np.sin(psi2)*(kb1 + kb2))/(kappa2*kb2) - (np.cos((kappa2*kb2*(l22 - length2*0.75))/(kb1 + kb2 + kb3))*np.sin(psi2)*(np.cos((kappa2*kb2*(length2*0.75))/(kb1 + kb2)) - 1)*(kb1 + kb2))/(kappa2*kb2) - (np.sin(psi2)*(np.cos((kappa2*kb2*(l22 - length2*0.75))/(kb1 + kb2 + kb3)) - 1)*(kb1 + kb2 + kb3))/(kappa2*kb2), length4 + (np.sin((kappa2*kb2*(l22 - length2*0.75))/(kb1 + kb2 + kb3))*(kb1 + kb2 + kb3))/(kappa2*kb2) + (np.cos((kappa2*kb2*(l22 - length2*0.75))/(kb1 + kb2 + kb3))*np.sin((kappa2*kb2*(length2*0.75))/(kb1 + kb2))*(kb1 + kb2))/(kappa2*kb2) + (np.sin((kappa2*kb2*(l22 - length2*0.75))/(kb1 + kb2 + kb3))*(np.cos((kappa2*kb2*(length2*0.75))/(kb1 + kb2)) - 1)*(kb1 + kb2))/(kappa2*kb2)],
+                              [ (np.sin((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*np.cos(psi2)*np.sin((kappa2*kb2*(length2))/(kb1 + kb2))*(kb1 + kb2))/(kappa2*kb2) - (np.cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*np.cos(psi2)*(np.cos((kappa2*kb2*(length2))/(kb1 + kb2)) - 1)*(kb1 + kb2))/(kappa2*kb2) - (np.cos(psi2)*(np.cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3)) - 1)*(kb1 + kb2 + kb3))/(kappa2*kb2), (np.sin((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*np.sin((kappa2*kb2*(length2))/(kb1 + kb2))*np.sin(psi2)*(kb1 + kb2))/(kappa2*kb2) - (np.cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*np.sin(psi2)*(np.cos((kappa2*kb2*(length2))/(kb1 + kb2)) - 1)*(kb1 + kb2))/(kappa2*kb2) - (np.sin(psi2)*(np.cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3)) - 1)*(kb1 + kb2 + kb3))/(kappa2*kb2), length4 + (np.sin((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*(kb1 + kb2 + kb3))/(kappa2*kb2) + (np.cos((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*np.sin((kappa2*kb2*(length2))/(kb1 + kb2))*(kb1 + kb2))/(kappa2*kb2) + (np.sin((kappa2*kb2*(l22 - length2))/(kb1 + kb2 + kb3))*(np.cos((kappa2*kb2*(length2))/(kb1 + kb2)) - 1)*(kb1 + kb2))/(kappa2*kb2)],
+                              [np.zeros(len(length4)),np.zeros(len(length4)),length1/4],
+                              [np.zeros(len(length4)),np.zeros(len(length4)),length1/2],
+                              [np.zeros(len(length4)),np.zeros(len(length4)),length1*0.75]]"""
             return backbone_point
         
-        def vec_distant(x,y,z):
+        """def vec_distant(x,y,z):
             x = np.concatenate((x), axis=None)
             y = np.concatenate((y), axis=None)
             z = np.concatenate((z), axis=None)
@@ -62,7 +80,7 @@ class CTR(om.ExplicitComponent):
             Y = np.subtract(y[:93],y[1:94])
             Z = np.subtract(z[:93],z[1:94])
             dist = np.sum(np.sqrt((np.square(X)+np.square(Y)+np.square(Z))))
-            return dist
+            return dist"""
         
         """def vec_surface(x,y,z):
             x = np.array(x)
@@ -73,19 +91,22 @@ class CTR(om.ExplicitComponent):
             Z = z[:][np.newaxis,:] - z[:][:, np.newaxis]
             dist = np.sum(np.sqrt((np.square(X.flatten())+np.square(Y.flatten())+np.square(Z.flatten()))))
             return dist"""
-        
         backbone_point = np.array(backbone(inputs))
         x = [backbone_point[0][0],backbone_point[1][0],backbone_point[2][0],backbone_point[3][0],backbone_point[4][0],backbone_point[5][0]]
         y = [backbone_point[0][1],backbone_point[1][1],backbone_point[2][1],backbone_point[3][1],backbone_point[4][1],backbone_point[5][1]]
         z = [backbone_point[0][2],backbone_point[1][2],backbone_point[2][2],backbone_point[3][2],backbone_point[4][2],backbone_point[5][2]]
+        """backbone_point = np.array(backbone(inputs))
+        x = [backbone_point[0][0],backbone_point[1][0],backbone_point[2][0],backbone_point[3][0],backbone_point[4][0],backbone_point[5][0],backbone_point[6][0],backbone_point[7][0],backbone_point[8][0],backbone_point[9][0],backbone_point[10][0],backbone_point[11][0],backbone_point[12][0],backbone_point[13][0],backbone_point[14][0]]
+        y = [backbone_point[0][1],backbone_point[1][1],backbone_point[2][1],backbone_point[3][1],backbone_point[4][1],backbone_point[5][1],backbone_point[6][1],backbone_point[7][1],backbone_point[8][1],backbone_point[9][1],backbone_point[10][1],backbone_point[11][1],backbone_point[12][1],backbone_point[13][1],backbone_point[14][1]]
+        z = [backbone_point[0][2],backbone_point[1][2],backbone_point[2][2],backbone_point[3][2],backbone_point[4][2],backbone_point[5][2],backbone_point[6][2],backbone_point[7][2],backbone_point[8][2],backbone_point[9][2],backbone_point[10][2],backbone_point[11][2],backbone_point[12][2],backbone_point[13][2],backbone_point[14][2]]"""
         
         # Objective function 1
-        outputs['f'] = vec_distant(x,y,z)*0.5
+        """outputs['f'] = vec_distant(x,y,z)*0.5"""
         # Objective function 2
-        """outputs['f'] = vec_surface(x,y,z) * 0.1"""
+        """outputs['f'] = vec_surface(x,y,z) * 0.5"""
         # Objective function 3
         #backbone_point = np.array(backbone(inputs))
-        """outputs['f'] = np.linalg.norm(backbone_point)"""
+        outputs['f'] = np.linalg.norm(backbone_point)
         
         
 
